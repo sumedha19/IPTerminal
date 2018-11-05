@@ -15,18 +15,18 @@ BASIC COMMANDS:
 
 * LIVE FOOTAGE ANALYSIS : vPlay
 
-Saving Video Feed : vSave
+Saving Video Feed : vSave,
 Previewing Videos : vPreview
 
 * HUMAN DETECTION : 
 
-Number Of People : nPeople
+Number Of People : nPeople,
 Face Detection : faceDetect
 
 * FACIAL ANALYSIS :
 
-Compare 2 faces : faceCompare
-Merge 2 faces : faceMerge
+Compare 2 faces : faceCompare,
+Merge 2 faces : faceMerge,
 View facial landmarks : faceLandmarks
 
 * IMAGE MANIPULATION :
@@ -35,8 +35,8 @@ Convert Image into Comic : imageComic
 
 * MARKER DETECTION : 
 
-Bar Code Scanning : barScan
-Aruco Scanning : arucoScan
+Bar Code Scanning : barScan,
+Aruco Scanning : arucoScan,
 QR Scanning : QRScan
 
 ************************************************************************
