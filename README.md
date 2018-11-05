@@ -10,8 +10,7 @@ Dependencies :
 3. Zbar
 4. Cblas and Lapack
 
-***********************************************************************
-BASIC COMMANDS:
+Commands :
 
 * LIVE FOOTAGE ANALYSIS : vPlay
 
@@ -38,6 +37,4 @@ Convert Image into Comic : imageComic
 Bar Code Scanning : barScan,
 Aruco Scanning : arucoScan,
 QR Scanning : QRScan
-
-************************************************************************
 
