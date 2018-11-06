@@ -159,41 +159,42 @@ public slots:
         deserialize("Others/shape_predictor_68_face_landmarks.dat") >> sp;
         dictionary = cv::aruco::getPredefinedDictionary(cv::aruco::DICT_6X6_250);
 
-        cout<<"Welcome to IPTerminal .."<<endl;
-        cout<<"Type 'help' to know about commands.."<<endl;
+        cout << "Welcome to IPTerminal .." << endl;
+        cout << "Type 'help' to know about commands.." << endl;
         while(1){
-            cout<<">>";
-            cin>>cmd;
-            switch(hash_cmd(cmd)){
+            cout << ">>";
+            cin >> cmd;
+            switch( hash_cmd(cmd) ){
             case help:
             {
-                cout<<"***********************************************************************"<<endl;
-                cout<<"BASIC COMMANDS:\n"<<endl;
-                cout<<"* LIVE FOOTAGE ANALYSIS : vPlay\n"<<endl;
-                cout<<"Saving Video Feed : vSave"<<endl;
-                cout<<"Previewing Videos : vPreview\n"<<endl;
-                cout<<"* HUMAN DETECTION : \n"<<endl;
-                cout<<"Number Of People : nPeople"<<endl;
-                cout<<"Face Detection : faceDetect\n"<<endl;
-                cout<<"* FACIAL ANALYSIS :\n"<<endl;
-                cout<<"Compare 2 faces : faceCompare"<<endl;
-                cout<<"Merge 2 faces : faceMerge"<<endl;
-                cout<<"View facial landmarks : faceLandmarks\n"<<endl;
-                cout<<"* IMAGE MANIPULATION :\n"<<endl;
-                cout<<"Convert Image into Comic : imageComic\n"<<endl;
-                cout<<"* MARKER DETECTION : \n"<<endl;
-                cout<<"Bar Code Scanning : barScan"<<endl;
-                cout<<"Aruco Scanning : arucoScan"<<endl;
-                cout<<"QR Scanning : QRScan\n"<<endl;
-                cout<<"************************************************************************"<<endl;
+                cout << "***********************************************************************" << endl;
+                cout << "BASIC COMMANDS:\n" << endl;
+                cout << "* LIVE FOOTAGE ANALYSIS : vPlay\n" << endl;
+                cout << "Saving Video Feed : vSave" << endl;
+                cout << "Previewing Videos : vPreview\n" << endl;
+                cout << "* HUMAN DETECTION : \n" << endl;
+                cout << "Number Of People : nPeople" << endl;
+                cout << "Face Detection : faceDetect\n" << endl;
+                cout <<"* FACIAL ANALYSIS :\n" << endl;
+                cout << "Compare 2 faces : faceCompare" << endl;
+                cout << "Merge 2 faces : faceMerge" << endl;
+                cout << "View facial landmarks : faceLandmarks\n" << endl;
+                cout << "* IMAGE MANIPULATION :\n" << endl;
+                cout << "Convert Image into Comic : imageComic\n" << endl;
+                cout << "* MARKER DETECTION : \n" << endl;
+                cout << "Bar Code Scanning : barScan" << endl;
+                cout << "Aruco Scanning : arucoScan" << endl;
+                cout << "QR Scanning : QRScan\n" << endl;
+                cout << "************************************************************************" << endl;
                 break;
             }
 
             case vPlay:
             {
-                cout<<"Live Footage starting (Press Esc to stop)"<<endl;
+                cout << "Live Footage starting (Press Esc to stop)" << endl;
                 // Insert your code here..
                 Mat frame;
+                cap.open(0);
                 while(1){
                     // Capture frame-by-frame
                     cap >> frame;
@@ -202,8 +203,8 @@ public slots:
                     if (frame.empty())
                         break;
                     imshow("Live Footage", frame);
-                    char c=(char)waitKey(25);
-                    if(c==27)
+                    char c = (char)waitKey(25);
+                    if(c == 27)
                         break;
                 }
                 cap.release();
@@ -211,8 +212,9 @@ public slots:
             }
             case vSave:
             {
-                cout<<"Saving Current Video Feed (Press Esc to stop)"<<endl;
+                cout << "Saving Current Video Feed (Press Esc to stop)" << endl;
                 // Insert your code here..
+                cap.open(0);
                 if(!cap.isOpened())
                 {
                     cout << "Error opening video stream" << endl;
@@ -255,25 +257,25 @@ public slots:
             case vPreview:
             {
                 string path;
-                cout<<"Select Video to Preview :"<<endl;
+                cout << "Select Video to Preview :" << endl;
                 // Insert your code here..
-                cout<<"Enter Path : ";
-                cin>>path;
+                cout << "Enter Path : ";
+                cin >> path;
                 cap.open(path);
                 if(!cap.isOpened())
                 {
                     cout << "Error opening video stream" << endl;
                     break;
                 }
-                cout<<"Opening file (Press Esc to stop the video)"<<endl;
+                cout << "Opening file (Press Esc to stop the video)" << endl;
                 Mat frame;
                 while(1){
                     cap >> frame;
                     if (frame.empty())
                         break;
                     imshow("Preview Footage", frame);
-                    char c=(char)waitKey(25);
-                    if(c==27)
+                    char c = (char)waitKey(25);
+                    if(c == 27)
                         break;
                 }
                 cap.release();
@@ -281,14 +283,24 @@ public slots:
             }
             case nPeople:
             {
-                cout<<"Human Detection Activated (Press Esc to stop)"<<endl;
+                cout << "Human Detection Activated (Press Esc to stop)" << endl;
                 // Insert your code here..
                 Mat frame;
                 HOGDescriptor hog;
                 hog.setSVMDetector(HOGDescriptor::getDefaultPeopleDetector());
+                string path;
+                cout << "Enter video  path :";
+                cin >> path;
+                if(exists_test(path)){
+                    cap.open(path);
+                }
+                else{
+                    cout << "Error loading video!" << endl;
+                    break;
+                }
                 int count = 0;
                 while(1){
-                    cap>>frame;
+                    cap >> frame;
                     if(frame.empty()){
                         break;
                     }
@@ -301,7 +313,7 @@ public slots:
                     /// draw detections and store location
                     for( size_t i = 0; i < found.size(); i++ )
                     {
-                        if(weights[i]>=1){
+                        if(weights[i] >= 1){
                             count++;
                             cv::rectangle(img, found[i], cv::Scalar(0,0,255), 3);
                             stringstream temp;
@@ -310,18 +322,29 @@ public slots:
                         }
                     }
                     imshow("Human Detection",img);
-                    char c=(char)waitKey(25);
-                    if(c==27)
+                    char c = (char)waitKey(25);
+                    if(c == 27)
                         break;
                 }
                 cap.release();
-                cout<<"Number of People detected :"<<count<<endl;
+                cout << "Number of People detected :" << count << endl;
                 break;
             }
             case faceDetect:
             {
-                cout<<"Face Detection Activated.."<<endl;
+                cout << "Face Detection Activated.." << endl;
                 // Insert your code here..
+                // Setting up video path
+                string path;
+                cout << "Enter video  path :";
+                cin >> path;
+                if(exists_test(path)){
+                    cap.open(path);
+                }
+                else{
+                    cout << "Error loading video!" << endl;
+                    break;
+                }
                 // Load Haar Classifiers file
                 if( !face_cascade.load( "Others/haarcascade_frontalface_default.xml") ) printf("--(!)Error loading\n");
                 Mat frame,frame_gray;
@@ -337,8 +360,8 @@ public slots:
                         cv::rectangle(frame,faces[i],Scalar(0,255,0),2,8);
                     }
                     imshow("Face Detection",frame);
-                    char c=(char)waitKey(25);
-                    if(c==27)
+                    char c = (char)waitKey(25);
+                    if(c == 27)
                         break;
                 }
                 cap.release();
@@ -346,11 +369,11 @@ public slots:
             }
             case faceCompare:
             {
-                cout<<"Face Compare Activated.."<<endl;
+                cout << "Face Compare Activated.." << endl;
                 // Insert your code here..
                 string path1,path2;
-                cout<<"Enter image paths :";
-                cin>>path1>>path2;
+                cout << "Enter image paths :";
+                cin >> path1 >> path2;
                 if(exists_test(path1) && exists_test(path2)){
                     Mat img1 = imread(path1,0);
                     Mat img2 = imread(path2,0);
@@ -374,24 +397,24 @@ public slots:
                         compare(face1,face2,result,cv::CMP_EQ);
                         float totalPixels = result.cols * result.rows;
                         float percentage  = (float)(countNonZero(result)/totalPixels)*100;
-                        cout<<"Matching percentage is "<<percentage<<endl;
+                        cout << "Matching percentage is " << percentage << endl;
                     }
                     else{
-                        cout<<"Face not detected."<<endl;
+                        cout << "Face not detected." << endl;
                     }
 
                 }
                 else
-                    cout<<"Path entered does not exists!"<<endl;
+                    cout << "Path entered does not exists!" << endl;
                 break;
             }
             case faceMerge:
             {
-                cout<<"Face Merge Activated.."<<endl;
+                cout << "Face Merge Activated.." << endl;
                 // Insert your code here..
                 string path1,path2;
-                cout<<"Enter image paths :";
-                cin>>path1>>path2;
+                cout << "Enter image paths :";
+                cin >> path1 >> path2;
                 //alpha controls the degree of morph
                 double alpha = 0.5;
 
@@ -422,8 +445,6 @@ public slots:
                         points.push_back(Point2f(x,y));
 
                     }
-
-
                     //Read triangle indices
                     ifstream ifs("tri.txt");
                     int x,y,z;
@@ -458,16 +479,16 @@ public slots:
 
                 }
                 else
-                    cout<<"Path entered does not exists!"<<endl;
+                    cout << "Path entered does not exists!" << endl;
                 break;
             }
             case faceLandmarks:
             {
-                cout<<"Face Landmarks Activated.."<<endl;
+                cout << "Face Landmarks Activated.." << endl;
                 // Insert your code here..
                 string path;
-                cout<<"Enter Image Path :";
-                cin>>path;
+                cout << "Enter Image Path :";
+                cin >> path;
                 Mat temp = imread(path);
                 cv_image<bgr_pixel> img(temp);
                 //			dlib::load_image(img, path);
@@ -477,26 +498,30 @@ public slots:
                 std::vector<dlib::rectangle> dets = detector(img);
                 cout << "Number of faces detected: " << dets.size() << endl;
                 std::vector<dlib::full_object_detection> shapes;
-                for (unsigned long j = 0; j < dets.size(); ++j)
+                for (unsigned long j = 0; j < dets.size(); j++)
                 {
                     dlib::full_object_detection shape = sp(img, dets[j]);
                     cout << "number of parts: "<< shape.num_parts() << endl;
-                    shapes.push_back(sp(img,dets[j]));
+                    shapes.push_back(shape);
+
                 }
 
-                // View our face poses on the screen.
-                image_window win;
+                // View our face poses on the screen
+                dlib::image_window win;
+                win.clear_overlay();
+                win.show();
                 win.set_image(img);
                 win.add_overlay(dlib::render_face_detections(shapes));
+                save_png(img,"landmark.png");
                 break;
             }
             case imageComic:
             {
-                cout<<"Image Comic Activated.."<<endl;
+                cout << "Image Comic Activated.." << endl;
                 // Insert your code here..
                 string path;
-                cout<<"Enter Image path :";
-                cin>>path;
+                cout << "Enter Image path :";
+                cin >> path;
                 if(exists_test(path)){
                     Mat src = imread(path);
                     Mat gray,edges;
@@ -527,18 +552,18 @@ public slots:
                     waitKey(0);
                 }
                 else
-                    cout<<"Path entered does not exists!"<<endl;
+                    cout << "Path entered does not exists!" << endl;
                 break;
             }
             case barScan:
             {
-                cout<<"Bar Code Scanning Activated.."<<endl;
+                cout << "Bar Code Scanning Activated.." << endl;
                 // Insert your code here..
                 // You can use zbar library for barcode(QRcode) scanning
 
                 string path;
-                cout<<"Enter Image path :";
-                cin>>path;
+                cout << "Enter Image path :";
+                cin >> path;
                 if(exists_test(path)){
                     Mat src = imread(path,0);
                     int width = src.cols;
@@ -550,25 +575,25 @@ public slots:
                     cout << "Total Barcodes Scanned :"<<n<<endl;
                     int counter = 0;
                     for (Image::SymbolIterator symbol = image.symbol_begin(); symbol != image.symbol_end(); ++symbol) {
-                        string type=symbol->get_type_name();
-                        string name=symbol->get_data() ;
+                        string type = symbol->get_type_name();
+                        string name = symbol->get_data() ;
                         // do something useful with results
-                        cout    << counter << " "<< "decoded " << type<< " symbol \"" << name << '"' << endl;
+                        cout << counter << " "<< "decoded " << type<< " symbol \"" << name << '"' << endl;
                         counter ++;
                     }
                 }
                 else
-                    cout<<"Path entered does not exists!"<<endl;
+                    cout << "Path entered does not exists!" << endl;
                 break;
             }
             case arucoScan:
             {
-                cout<<"Aruco Code Scanning Activated.."<<endl;
+                cout << "Aruco Code Scanning Activated.." << endl;
                 // Insert your code here..
                 //Use aruco library from opencv_contrib module
                 string path;
-                cout<<"Enter Image path :";
-                cin>>path;
+                cout << "Enter Image path :";
+                cin >> path;
                 if(exists_test(path)){
                     Mat src = imread(path);
                     // Detect Markers in the Image
@@ -581,16 +606,16 @@ public slots:
                     waitKey(0);
                 }
                 else
-                    cout<<"Path entered does not exists!"<<endl;
+                    cout << "Path entered does not exists!" << endl;
                 break;
             }
             case QRScan:
             {
-                cout<<"QR Code Scanning Activated.."<<endl;
+                cout << "QR Code Scanning Activated.." << endl;
                 // Insert your code here..
                 string path;
-                cout<<"Enter Image path :";
-                cin>>path;
+                cout << "Enter Image path :";
+                cin >> path;
                 if(exists_test(path)){
                     Mat src = imread(path,0);
                     int width = src.cols;
@@ -599,26 +624,26 @@ public slots:
                     Image image(width, height, "Y800", raw, width * height);
                     scanner.set_config(ZBAR_NONE, ZBAR_CFG_ENABLE, 1);
                     int n  = scanner.scan(image); // Scan image for Markers
-                    cout << "Total Barcodes Scanned :"<<n<<endl;
+                    cout << "Total Barcodes Scanned :" << n << endl;
                     int counter = 0;
                     for (Image::SymbolIterator symbol = image.symbol_begin(); symbol != image.symbol_end(); ++symbol) {
-                        string type=symbol->get_type_name();
-                        string name=symbol->get_data() ;
+                        string type = symbol->get_type_name();
+                        string name = symbol->get_data() ;
                         // do something useful with results
                         if(type == "QR-Code"){
-                            cout    << counter << " "<< "decoded " << type<< " symbol \"" << name << '"' << endl;
+                            cout << counter << " "<< "decoded " << type<< " symbol \"" << name << '"' << endl;
                             counter ++;
                         }
                     }
-                    cout << "Total QR-Codes scanned :"<<counter<<endl;
+                    cout << "Total QR-Codes scanned :" << counter << endl;
                 }
                 else
-                    cout<<"Path entered does not exists!"<<endl;
+                    cout << "Path entered does not exists!" << endl;
                 break;
             }
             case unknown:
             {
-                cout<<cmd<<": command not found"<<endl;
+                cout << cmd << ": command not found" << endl;
                 break;
             }
 
