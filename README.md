@@ -3,6 +3,8 @@ Image Processing Terminal
 
 An Image Processing terminal application using C++ and Qt creator.
 
+(Screenshots Included)
+
 Dependencies :
 
 1. OpenCV with Contrib modules (Aruco)
